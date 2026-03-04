@@ -1,0 +1,14 @@
+algorithm: ppo
+patient: adult#001
+action_type: discrete
+constrained: true
+
+# Hyperparameters — lr reduced for Lagrangian stability
+learning_rate: 1.0e-4
+n_steps: 2048
+batch_size: 64
+n_epochs: 10
+
+# Training schedule
+n_timesteps: 500000
+eval_freq: 10000

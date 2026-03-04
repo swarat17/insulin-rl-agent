@@ -1,0 +1,13 @@
+algorithm: dqn
+patient: adult#001
+action_type: discrete
+
+# Hyperparameters
+learning_rate: 1.0e-4
+buffer_size: 100000
+exploration_fraction: 0.3
+batch_size: 32
+
+# Training schedule
+n_timesteps: 500000
+eval_freq: 10000

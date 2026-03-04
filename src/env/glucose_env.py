@@ -197,3 +197,90 @@ class GlucoseEnv(gym.Env):
 
     def close(self):
         pass
+
+
+# ---------------------------------------------------------------------------
+# Lagrangian-constrained environment
+# ---------------------------------------------------------------------------
+
+
+class LagrangianGlucoseEnv(GlucoseEnv):
+    """
+    GlucoseEnv subclass that augments the reward with a Lagrangian penalty.
+
+    At each step the dose is checked against clinical bounds. If it violates
+    them, the base reward is reduced by λ × violation. λ is updated via dual
+    gradient descent at the end of every episode, so it rises when the agent
+    is unsafe and falls when it is safe.
+
+    Crucially, the *original* action is always passed to Simglucose unchanged.
+    The Lagrangian approach discourages unsafe doses through the reward signal,
+    not by blocking them — this preserves a smooth, informative gradient for
+    the policy to learn from.
+
+    Parameters
+    ----------
+    multiplier : LagrangianMultiplier
+        The shared Lagrange multiplier instance.
+    checker : DoseConstraintChecker, optional
+        Clinical bounds checker. Defaults to DoseConstraintChecker().
+    **kwargs
+        Passed through to GlucoseEnv (patient_name, action_type, etc.)
+    """
+
+    def __init__(self, multiplier, checker=None, **kwargs) -> None:
+        # Lazy imports to avoid circular dependencies at module load time
+        from src.safety.constraints import DoseConstraintChecker
+        from src.safety.lagrangian import LagrangianMultiplier  # noqa: F401 (type hint)
+
+        super().__init__(**kwargs)
+        self._multiplier = multiplier
+        self._checker = checker if checker is not None else DoseConstraintChecker()
+        self._episode_violations: list[float] = []
+
+    # ------------------------------------------------------------------
+    # Gymnasium API overrides
+    # ------------------------------------------------------------------
+
+    def reset(self, seed=None, options=None):
+        self._episode_violations = []
+        return super().reset(seed=seed, options=options)
+
+    def step(self, action):
+        # 1. Compute the dose this action maps to (for violation check only)
+        if self.action_type == "discrete":
+            dose = float(self.DOSE_LEVELS[int(action)])
+        else:
+            dose = float(np.clip(np.atleast_1d(action)[0], 0.0, 1.0)) * self.max_basal_dose
+
+        violation = self._checker.constraint_violation(dose)
+        self._episode_violations.append(violation)
+
+        # 2. Step the parent — passes the ORIGINAL action to Simglucose
+        obs, base_reward, terminated, truncated, info = super().step(action)
+
+        # 3. Penalise the reward proportional to λ and violation magnitude
+        augmented_reward = self._multiplier.augment_reward(base_reward, violation)
+
+        # 4. At episode end, update λ with the episode's violation history
+        if terminated or truncated:
+            self._multiplier.update(self._episode_violations)
+            self._episode_violations = []
+
+        return obs, augmented_reward, terminated, truncated, info
+
+    # ------------------------------------------------------------------
+    # Diagnostics
+    # ------------------------------------------------------------------
+
+    def get_constraint_stats(self) -> dict:
+        """Return recent mean violation and current λ for logging."""
+        mean_violation = (
+            float(np.mean(self._episode_violations))
+            if self._episode_violations
+            else 0.0
+        )
+        return {
+            "mean_violation": mean_violation,
+            "lambda": self._multiplier.get_lambda(),
+        }
