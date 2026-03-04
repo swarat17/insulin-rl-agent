@@ -1,5 +1,5 @@
 """
-Smoke test for Phase 1 — runs one complete 480-step episode and prints results.
+Smoke test for Phases 1 & 2 — runs one complete episode and prints results.
 
 Usage:
     python scripts/smoke_test.py
@@ -11,6 +11,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.env.glucose_env import GlucoseEnv
+from src.evaluation.metrics import compute_all_metrics
 
 PATIENT = "adult#001"
 FIXED_ACTION = 2  # discrete level 2 ≈ 0.1 U/hr
@@ -38,17 +39,18 @@ def main():
         steps += 1
 
     final_cgm = cgm_history[-1]
-    tir = (
-        sum(1 for g in cgm_history if 70.0 <= g <= 180.0) / len(cgm_history) * 100.0
-    )
+    metrics = compute_all_metrics(cgm_history)
 
     print("\n--- Episode Results ---")
     print(f"Total steps      : {steps}")
     print(f"Total reward     : {total_reward:.2f}")
     print(f"Final CGM        : {final_cgm:.1f} mg/dL")
-    print(f"Time-in-Range    : {tir:.1f}%")
     print(f"Terminated early : {terminated}")
     print(f"Truncated        : {truncated}")
+    print("\n--- Clinical Metrics ---")
+    for key, val in metrics.items():
+        unit = " mg/dL" if key == "glucose_variability" else "%"
+        print(f"  {key:<28}: {val:.2f}{unit}")
 
 
 if __name__ == "__main__":
