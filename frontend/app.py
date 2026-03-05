@@ -211,11 +211,20 @@ def page_live_simulation():
     agents = _load_all_agents()
     patient_names = list(PATIENT_CONFIGS.keys())
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        agent_label = st.selectbox("Agent", list(agents.keys()))
+        agent_label = st.selectbox("Agent", [k for k in agents.keys() if k != "Clinician Baseline"])
     with col2:
         patient_name = st.selectbox("Patient Cohort", patient_names)
+    with col3:
+        seed = st.number_input("Episode Seed", min_value=0, max_value=99, value=42,
+                               help="Change seed to see a different episode. "
+                                    "Benchmark results are averaged over 10 seeds (0–9).")
+
+    st.caption(
+        "⚠️ Single-episode results can differ significantly from the benchmark table, "
+        "which averages 10 episodes. High-variance agents like DQN may crash on some seeds."
+    )
 
     if st.button("Run Episode", type="primary"):
         agent, action_type = agents[agent_label]
@@ -223,14 +232,10 @@ def page_live_simulation():
         with st.spinner("Simulating 24-hour episode…"):
             try:
                 agent_cgm, agent_doses, metrics = _run_episode(
-                    agent, action_type, patient_name, seed=42
+                    agent, action_type, patient_name, seed=int(seed)
                 )
-                _, baseline_doses, _ = _run_episode(
-                    ClinicianBaseline(), "discrete", patient_name, seed=42
-                )
-                baseline_agent = ClinicianBaseline()
                 baseline_cgm, _, _ = _run_episode(
-                    baseline_agent, "discrete", patient_name, seed=42
+                    ClinicianBaseline(), "discrete", patient_name, seed=int(seed)
                 )
             except Exception as exc:
                 st.warning(f"Episode failed: {exc}")
@@ -392,7 +397,7 @@ and provably converges to a constrained-optimal solution.
         "results", "plots", "lambda_curve.png"
     )
     if os.path.exists(lambda_img):
-        st.image(lambda_img, caption=(
+        st.image(lambda_img, width=600, caption=(
             "Lagrangian multiplier λ during constrained PPO training. "
             "λ rises when the agent violates safety constraints and falls as it learns safe behavior."
         ))
@@ -414,8 +419,8 @@ Hardware: CPU (Windows 11). All training via Stable-Baselines3.
 
 ### Links
 
-- **GitHub:** [github.com/swarat17/insulin-rl-agent](https://github.com)
-- **W&B Dashboard:** [wandb.ai/swaratsarkar-university-at-buffalo/insulin-rl-agent](https://wandb.ai)
+- **GitHub:** [github.com/swarat17/insulin-rl-agent](https://github.com/swarat17/insulin-rl-agent)
+- **W&B Dashboard:** [wandb.ai/swaratsarkar-university-at-buffalo/insulin-rl-agent](https://wandb.ai/swaratsarkar-university-at-buffalo/insulin-rl-agent)
 """)
 
 
