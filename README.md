@@ -8,7 +8,7 @@
 [![Stable-Baselines3](https://img.shields.io/badge/SB3-2.7-green.svg)](https://stable-baselines3.readthedocs.io/)
 [![W&B](https://img.shields.io/badge/Weights%20&%20Biases-tracked-yellow.svg)](https://wandb.ai/swaratsarkar-university-at-buffalo/insulin-rl-agent)
 
-**[Live Demo — Hugging Face Spaces](https://huggingface.co/spaces/swarat17/rl-dosing-agent)**
+**[Live Demo — Hugging Face Spaces](https://huggingface.co/spaces/Swarat17/insulin-rl-agent)**
 
 ---
 
