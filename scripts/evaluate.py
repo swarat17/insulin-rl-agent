@@ -55,16 +55,28 @@ def load_agents(models_dir: str) -> list[tuple[str, object]]:
 
         sidecar = zip_path.with_suffix(".json")
         action_type = "discrete"
+        constrained = False
         if sidecar.exists():
             with open(sidecar) as f:
                 cfg = json.load(f)
             action_type = cfg.get("action_type", "discrete")
+            constrained = cfg.get("constrained", False)
+
+        # Build a clean human-readable name, deduplicating constrained variants
+        label = algo.upper()
+        if constrained:
+            label += " (constrained)"
+
+        # If this label already exists, skip (keep first occurrence = earliest timestamp)
+        if any(n == label for n, _ in agents):
+            log.info(f"Skipping duplicate {label} (keeping earlier checkpoint).")
+            continue
 
         try:
             env = GlucoseEnv(action_type=action_type)
             agent = _AGENT_LOADERS[algo].load(str(zip_path), env=env)
-            agents.append((stem, agent))
-            log.info(f"Loaded: {stem}")
+            agents.append((label, agent))
+            log.info(f"Loaded: {label} ({zip_path.name})")
         except Exception as exc:
             log.warning(f"Failed to load {zip_path.name}: {exc}")
 
