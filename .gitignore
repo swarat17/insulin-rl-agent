@@ -8,6 +8,8 @@ __pycache__/
 *.pth
 models/
 results/plots/
+results/benchmark_results.csv
+Dockerfile
 .wandb/
 wandb/
 .coverage
