@@ -3,10 +3,8 @@ title: RL Insulin Dosing Agent
 emoji: 💉
 colorFrom: blue
 colorTo: green
-sdk: streamlit
-sdk_version: 1.55.0
-app_file: frontend/app.py
-python_version: "3.10"
+sdk: docker
+app_port: 8501
 pinned: false
 ---
 
