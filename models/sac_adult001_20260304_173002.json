@@ -1,0 +1,10 @@
+{
+  "algorithm": "sac",
+  "patient": "adult#001",
+  "action_type": "continuous",
+  "learning_rate": 0.0003,
+  "buffer_size": 100000,
+  "batch_size": 256,
+  "n_timesteps": 500000,
+  "eval_freq": 10000
+}
