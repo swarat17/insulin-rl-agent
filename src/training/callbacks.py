@@ -37,7 +37,9 @@ class WandbCallback(BaseCallback):
     so the dual learning dynamics are visible in W&B.
     """
 
-    def __init__(self, eval_env, eval_freq: int = 10_000, multiplier=None, verbose: int = 0):
+    def __init__(
+        self, eval_env, eval_freq: int = 10_000, multiplier=None, verbose: int = 0
+    ):
         super().__init__(verbose)
         self.eval_env = eval_env
         self.eval_freq = eval_freq

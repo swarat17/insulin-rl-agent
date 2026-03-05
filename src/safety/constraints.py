@@ -69,13 +69,13 @@ class DoseConstraintChecker:
 # Lunch      12:00–14:00  →  0.500–0.583
 # Dinner     18:00–20:00  →  0.750–0.833
 _MEAL_WINDOWS = [
-    (8 / 24, 10 / 24),   # breakfast
+    (8 / 24, 10 / 24),  # breakfast
     (12 / 24, 14 / 24),  # lunch
     (18 / 24, 20 / 24),  # dinner
 ]
 
-_BASE_BASAL = 0.1    # U/hr — overnight / inter-meal rate
-_MEAL_BASAL = 0.25   # U/hr — elevated rate in post-meal windows
+_BASE_BASAL = 0.1  # U/hr — overnight / inter-meal rate
+_MEAL_BASAL = 0.25  # U/hr — elevated rate in post-meal windows
 
 
 class ClinicianBaseline:

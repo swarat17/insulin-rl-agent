@@ -37,9 +37,7 @@ def test_uniform_interface_across_algorithms(tmp_path):
 
     # DQN — discrete
     env_d = GlucoseEnv(action_type="discrete")
-    dqn_model = DQN(
-        "MlpPolicy", env_d, learning_starts=0, batch_size=32, verbose=0
-    )
+    dqn_model = DQN("MlpPolicy", env_d, learning_starts=0, batch_size=32, verbose=0)
     dqn_model.learn(64)
     p = str(tmp_path / "dqn_test")
     dqn_model.save(p)

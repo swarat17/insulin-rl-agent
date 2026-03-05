@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 from src.evaluation.evaluator import Evaluator, _CSV_COLS
 
-
 # ---------------------------------------------------------------------------
 # Shared helpers
 # ---------------------------------------------------------------------------

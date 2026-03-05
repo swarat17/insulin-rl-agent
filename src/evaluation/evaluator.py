@@ -131,7 +131,9 @@ class Evaluator:
                     for k in episode_metrics[0]
                 }
                 results[agent_name][patient_id] = avg
-                all_rows.append({"agent_name": agent_name, "patient": patient_id, **avg})
+                all_rows.append(
+                    {"agent_name": agent_name, "patient": patient_id, **avg}
+                )
 
         self._save_csv(all_rows)
         return results
@@ -172,7 +174,9 @@ class Evaluator:
     def _action_to_dose(self, action, env: GlucoseEnv) -> float:
         if env.action_type == "discrete":
             return float(env.DOSE_LEVELS[int(np.atleast_1d(action).flat[0])])
-        return float(np.clip(np.atleast_1d(action).flat[0], 0.0, 1.0)) * env.max_basal_dose
+        return (
+            float(np.clip(np.atleast_1d(action).flat[0], 0.0, 1.0)) * env.max_basal_dose
+        )
 
     def _dose_to_action(self, dose: float, env: GlucoseEnv):
         if env.action_type == "discrete":

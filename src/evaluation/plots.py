@@ -10,6 +10,7 @@ from __future__ import annotations
 import os
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -53,9 +54,11 @@ def plot_tir_comparison(
     for i, agent in enumerate(agents):
         subset = results_df[results_df["agent_name"] == agent]
         tirs = [
-            float(subset[subset["patient"] == p]["tir"].values[0])
-            if p in subset["patient"].values
-            else 0.0
+            (
+                float(subset[subset["patient"] == p]["tir"].values[0])
+                if p in subset["patient"].values
+                else 0.0
+            )
             for p in patients
         ]
         ax.bar(x + i * width - 0.4 + width / 2, tirs, width, label=agent)
@@ -98,9 +101,13 @@ def plot_safety_comparison(
     for i, agent in enumerate(agents):
         subset = results_df[results_df["agent_name"] == agent]
         fracs = [
-            float(subset[subset["patient"] == p]["unsafe_action_fraction"].values[0])
-            if p in subset["patient"].values
-            else 0.0
+            (
+                float(
+                    subset[subset["patient"] == p]["unsafe_action_fraction"].values[0]
+                )
+                if p in subset["patient"].values
+                else 0.0
+            )
             for p in patients
         ]
         ax.bar(x + i * width - 0.4 + width / 2, fracs, width, label=agent)
@@ -172,22 +179,47 @@ def plot_trajectory(
     ax.axhspan(180, 400, alpha=0.08, color="orange", label="_nolegend_")
 
     # Clinical boundary dashed lines
-    ax.axhline(70, color="red", linestyle="--", linewidth=1.0, label="Hypo threshold (70)")
-    ax.axhline(180, color="orange", linestyle="--", linewidth=1.0, label="Hyper threshold (180)")
+    ax.axhline(
+        70, color="red", linestyle="--", linewidth=1.0, label="Hypo threshold (70)"
+    )
+    ax.axhline(
+        180,
+        color="orange",
+        linestyle="--",
+        linewidth=1.0,
+        label="Hyper threshold (180)",
+    )
 
     # Trajectories
-    ax.plot(hours, agent_cgm[:_EPISODE_STEPS], color="royalblue", linewidth=1.5, label=agent_label)
-    ax.plot(hours, baseline_cgm[:_EPISODE_STEPS], color="tomato", linewidth=1.5,
-            linestyle="--", label="Clinician Baseline")
+    ax.plot(
+        hours,
+        agent_cgm[:_EPISODE_STEPS],
+        color="royalblue",
+        linewidth=1.5,
+        label=agent_label,
+    )
+    ax.plot(
+        hours,
+        baseline_cgm[:_EPISODE_STEPS],
+        color="tomato",
+        linewidth=1.5,
+        linestyle="--",
+        label="Clinician Baseline",
+    )
 
     # Legend patches for shading
     green_patch = mpatches.Patch(color="green", alpha=0.3, label="In-range [70–180]")
     red_patch = mpatches.Patch(color="red", alpha=0.3, label="Hypoglycemia (<70)")
-    orange_patch = mpatches.Patch(color="orange", alpha=0.3, label="Hyperglycemia (>180)")
+    orange_patch = mpatches.Patch(
+        color="orange", alpha=0.3, label="Hyperglycemia (>180)"
+    )
 
     handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles=handles + [green_patch, red_patch, orange_patch],
-              loc="upper right", fontsize=8)
+    ax.legend(
+        handles=handles + [green_patch, red_patch, orange_patch],
+        loc="upper right",
+        fontsize=8,
+    )
 
     ax.set_xlabel("Time (hours)")
     ax.set_ylabel("CGM (mg/dL)")
@@ -231,8 +263,10 @@ def plot_lambda_curve(
     ax.fill_between(x, 0, lambda_history, alpha=0.15, color="purple")
     ax.set_xlabel("Training Timesteps")
     ax.set_ylabel("λ (Lagrange Multiplier)")
-    ax.set_title("Lagrangian Multiplier λ During Constrained PPO Training\n"
-                 "(rises when agent violates constraints, falls when safe)")
+    ax.set_title(
+        "Lagrangian Multiplier λ During Constrained PPO Training\n"
+        "(rises when agent violates constraints, falls when safe)"
+    )
     ax.set_ylim(bottom=0)
     fig.tight_layout()
     fig.savefig(save_path, dpi=150)

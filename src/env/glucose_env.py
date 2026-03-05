@@ -65,9 +65,10 @@ class GlucoseEnv(gym.Env):
         """
         super().__init__()
 
-        assert action_type in ("discrete", "continuous"), (
-            f"action_type must be 'discrete' or 'continuous', got '{action_type}'"
-        )
+        assert action_type in (
+            "discrete",
+            "continuous",
+        ), f"action_type must be 'discrete' or 'continuous', got '{action_type}'"
 
         self.patient_name = patient_name
         self.action_type = action_type
@@ -104,9 +105,9 @@ class GlucoseEnv(gym.Env):
 
     def _get_obs(self) -> np.ndarray:
         if self._current_time is not None:
-            time_of_day = (
-                self._current_time.hour * 60 + self._current_time.minute
-            ) / (24 * 60)
+            time_of_day = (self._current_time.hour * 60 + self._current_time.minute) / (
+                24 * 60
+            )
         else:
             time_of_day = 0.0
 
@@ -251,7 +252,9 @@ class LagrangianGlucoseEnv(GlucoseEnv):
         if self.action_type == "discrete":
             dose = float(self.DOSE_LEVELS[int(action)])
         else:
-            dose = float(np.clip(np.atleast_1d(action)[0], 0.0, 1.0)) * self.max_basal_dose
+            dose = (
+                float(np.clip(np.atleast_1d(action)[0], 0.0, 1.0)) * self.max_basal_dose
+            )
 
         violation = self._checker.constraint_violation(dose)
         self._episode_violations.append(violation)

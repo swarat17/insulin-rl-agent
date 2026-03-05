@@ -52,8 +52,22 @@ def test_load_benchmark_results_top_level_keys(tmp_path):
     with open(csv_path, "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"agent_name": "PPO", "patient": "adult#001", "tir": "72.0", "hypo_rate": "3.0"})
-        writer.writerow({"agent_name": "DQN", "patient": "adult#001", "tir": "77.0", "hypo_rate": "18.0"})
+        writer.writerow(
+            {
+                "agent_name": "PPO",
+                "patient": "adult#001",
+                "tir": "72.0",
+                "hypo_rate": "3.0",
+            }
+        )
+        writer.writerow(
+            {
+                "agent_name": "DQN",
+                "patient": "adult#001",
+                "tir": "77.0",
+                "hypo_rate": "18.0",
+            }
+        )
 
     results = load_benchmark_results(str(csv_path))
     assert "PPO" in results

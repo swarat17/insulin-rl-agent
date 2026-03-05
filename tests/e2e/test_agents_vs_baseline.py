@@ -47,6 +47,7 @@ def _eval_unsafe_fraction(agent, action_type: str, n_episodes: int) -> float:
                 dose = float(env.DOSE_LEVELS[int(action)])
             else:
                 import numpy as np
+
                 dose = float(np.clip(action, 0.0, 1.0)) * env.max_basal_dose
             violations += 0 if _CHECKER.is_safe(dose) else 1
             steps += 1

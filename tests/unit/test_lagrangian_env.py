@@ -41,7 +41,9 @@ def test_returns_augmented_reward():
     expected_reward = expected_base - 1.0 * violation
 
     with patch.object(
-        env._sim_env, "_step", return_value=(_mock_sim_obs(120.0), 0.0, False, _MOCK_INFO)
+        env._sim_env,
+        "_step",
+        return_value=(_mock_sim_obs(120.0), 0.0, False, _MOCK_INFO),
     ):
         _, reward, _, _, _ = env.step(action)
 
@@ -79,6 +81,6 @@ def test_original_action_passed_to_simulator():
         env.step(action)
 
     assert len(captured) == 1
-    assert captured[0] == pytest.approx(expected_dose), (
-        f"Expected dose {expected_dose} to be passed to simulator, got {captured[0]}"
-    )
+    assert captured[0] == pytest.approx(
+        expected_dose
+    ), f"Expected dose {expected_dose} to be passed to simulator, got {captured[0]}"
