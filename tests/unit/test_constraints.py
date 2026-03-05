@@ -1,7 +1,7 @@
 """Unit tests for src/safety/constraints.py — Phase 2."""
 
 import pytest
-from src.safety.constraints import DoseConstraintChecker, ClinicianBaseline
+from src.safety.constraints import DoseConstraintChecker
 
 
 @pytest.fixture

@@ -1,7 +1,6 @@
 """Unit tests for src/agents/ wrappers — Phase 3."""
 
 import numpy as np
-import pytest
 from stable_baselines3 import DQN, PPO, SAC
 
 from src.agents.dqn_agent import DQNAgent

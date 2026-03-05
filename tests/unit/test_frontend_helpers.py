@@ -1,12 +1,9 @@
 """Unit tests for frontend/helpers.py — Phase 6."""
 
 import csv
-import os
 
-import pytest
 
 from frontend.helpers import (
-    cgm_color,
     cgm_status,
     format_tir,
     load_benchmark_results,

@@ -3,7 +3,6 @@
 import json
 import os
 
-import pytest
 import yaml
 from stable_baselines3 import PPO
 

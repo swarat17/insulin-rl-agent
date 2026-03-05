@@ -5,7 +5,6 @@ from src.evaluation.metrics import (
     time_in_range,
     hypoglycemia_rate,
     severe_hypoglycemia_rate,
-    hyperglycemia_rate,
     compute_all_metrics,
     glucose_variability,
 )

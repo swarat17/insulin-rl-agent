@@ -1,9 +1,7 @@
 """Unit tests for src/evaluation/evaluator.py — Phase 5."""
 
-import os
 from unittest.mock import patch
 
-import pytest
 
 from src.evaluation.evaluator import Evaluator, _CSV_COLS
 

@@ -3,7 +3,6 @@ Integration tests that verify the full pipeline components work together.
 No trained checkpoints required — uses live GlucoseEnv episodes.
 """
 
-import pytest
 
 from src.env.glucose_env import GlucoseEnv, LagrangianGlucoseEnv
 from src.evaluation.metrics import compute_all_metrics

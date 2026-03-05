@@ -4,7 +4,6 @@ End-to-end tests — require trained model checkpoints in models/.
 Run with: pytest tests/e2e/ -v -m e2e
 """
 
-import os
 from pathlib import Path
 
 import pytest
