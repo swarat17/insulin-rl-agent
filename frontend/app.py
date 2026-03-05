@@ -434,7 +434,7 @@ _PAGES = {
     "About & Methods": page_about,
 }
 
-st.sidebar.title("💉 RL Dosing Agent")
+st.sidebar.title("💉 Insulin Dosing RL Agent")
 st.sidebar.markdown("---")
 page = st.sidebar.radio("Navigation", list(_PAGES.keys()))
 _PAGES[page]()
